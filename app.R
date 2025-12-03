@@ -4,6 +4,8 @@ library(ggplot2)
 library(bslib)
 library(DT)
 
+#bslib::bs_theme_preview()  pour aller faire du CSS et qu'il soit importé dans la console
+
 thematic::thematic_shiny(font = "auto")
 
 
@@ -19,6 +21,14 @@ ui <- fluidPage(theme = bs_theme(
     # Sidebar with a slider input for number of taille 
     sidebarLayout(
         sidebarPanel(
+          actionButton(
+            inputId="bouton",
+            label="clique-moi"
+          ),
+          actionButton(
+            inputId="bouton2",
+            label="clique-moi-encore"
+          ),
             sliderInput(inputId="taille",
                         label="Height of characters:",
                         min = 0,
@@ -39,6 +49,17 @@ ui <- fluidPage(theme = bs_theme(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  observeEvent(input$bouton, {
+    message("vous avez cliqué sur le bouton")
+  })
+  
+  observeEvent(input$bouton2, {
+    showNotification(
+      "La valeur du slider a changé !",
+      type = "message"
+    )
+  })
   
     output$nbtext<-renderText({paste(starwars |> 
         filter(height > input$taille, gender==input$gender) |> nrow()," personnages concernés")
