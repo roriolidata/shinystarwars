@@ -1,10 +1,17 @@
 library(shiny)
 library(dplyr)
 library(ggplot2)
+library(bslib)
 library(DT)
 
+thematic::thematic_shiny(font = "auto")
+
+
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- fluidPage(theme = bs_theme(
+  version = 5,
+  bootswatch="minty"
+),
 
     # Application title
     titlePanel("Starwars"),h1("Star Wars Characters"),
