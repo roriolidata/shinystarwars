@@ -4,9 +4,11 @@ library(ggplot2)
 library(bslib)
 library(DT)
 
+
 #bslib::bs_theme_preview()  pour aller faire du CSS et qu'il soit importé dans la console
 
 thematic::thematic_shiny(font = "auto")
+
 
 
 # Define UI for application that draws a histogram
@@ -28,7 +30,8 @@ ui <- fluidPage(theme = bs_theme(
           actionButton(
             inputId="bouton2",
             label="clique-moi-encore"
-          ),
+          )
+
             sliderInput(inputId="taille",
                         label="Height of characters:",
                         min = 0,
@@ -37,6 +40,8 @@ ui <- fluidPage(theme = bs_theme(
             selectInput(inputId="gender",
                         label="character's gender",c("masculine", "feminine"),selected = NULL, multiple = FALSE, selectize = TRUE)
         ),
+        
+        
 
         # Show a plot of the generated distribution
         mainPanel(
@@ -50,6 +55,8 @@ ui <- fluidPage(theme = bs_theme(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
+  rv <- reactiveValues(df = NULL)
+  
   observeEvent(input$bouton, {
     message("vous avez cliqué sur le bouton")
   })
@@ -59,15 +66,21 @@ server <- function(input, output) {
       "La valeur du slider a changé !",
       type = "message"
     )
+    rv$df<-starwars |> filter(height > input$taille, gender==input$gender)
+    rv$plot<-rv$df |> 
+      
   })
   
-    output$nbtext<-renderText({paste(starwars |> 
-        filter(height > input$taille, gender==input$gender) |> nrow()," personnages concernés")
+  
+    
+  })
+    
+  
+    output$nbtext<-renderText({paste(rv$df |> nrow()," personnages concernés")
     })
   
     output$StarWarsPlot <- renderPlot({
-      starwars |> 
-        filter(height > input$taille & gender==input$gender) |> 
+      rv$df |> 
         ggplot(aes(x = height)) +
         geom_histogram(
           binwidth = 10, 
@@ -78,8 +91,7 @@ server <- function(input, output) {
     })
     
     output$StarwarsDT<-renderDT({
-      starwars|> 
-        filter(height > input$taille & gender==input$gender)|> select(name,height) 
+      rv$df|> select(name,height) 
     })
 }
 
