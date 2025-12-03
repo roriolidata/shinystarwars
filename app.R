@@ -58,7 +58,7 @@ server <- function(input, output) {
     
     output$StarwarsDT<-renderDT({
       starwars|> 
-        filter(height > input$taille & gender==input$gender)|> select(name) 
+        filter(height > input$taille & gender==input$gender)|> select(name,height) 
     })
 }
 
